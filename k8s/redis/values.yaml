@@ -1,0 +1,59 @@
+architecture: replication
+
+replica:
+  replicaCount: 2
+
+auth:
+  enabled: true
+  existingSecret: redis-sentinel
+  existingSecretPasswordKey: redis-password
+
+sentinel:
+  enabled: true
+  masterSet: mymaster
+  quorum: 2
+  automateClusterRecovery: true
+  downAfterMilliseconds: 60000
+  failoverTimeout: 180000
+  parallelSyncs: 1
+
+persistence:
+  enabled: true
+  existingClaim: redis-pvc
+  mountPath: /data
+  accessModes:
+    - ReadWriteMany
+  size: 10Gi
+  storageClass: nfs-storage
+
+service:
+  type: ClusterIP
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+    ephemeral-storage: 50Mi
+  limits:
+    cpu: 150m
+    memory: 192Mi
+    ephemeral-storage: 2Gi
+
+podSecurityContext:
+  enabled: true
+  fsGroup: 1001
+  fsGroupChangePolicy: Always
+
+containerSecurityContext:
+  enabled: true
+  runAsUser: 1001
+  runAsGroup: 1001
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+
+metrics:
+  enabled: false
+
+volumePermissions:
+  enabled: false
