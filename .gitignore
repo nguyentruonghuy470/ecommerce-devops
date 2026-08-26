@@ -1,0 +1,38 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Kubernetes secrets / credentials
+*.key
+*.pem
+*.p12
+*.pfx
+kubeconfig
+admin.conf
+secret.yaml
+secrets.yaml
+
+# Logs
+*.log
+
+# Application
+node_modules/
+target/
+dist/
+
+# Database / backup
+*.sql
+*.sql.gz
+*.dump
+*.bak
+data/
+backup-data/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-ecommerce-deployment
+  namespace: ecommerce
+  labels:
+    app: backend-ecommerce
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: backend-ecommerce
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+
+  template:
+    metadata:
+      labels:
+        app: backend-ecommerce
+
+    spec:
+      containers:
+        - name: ecommerce
+          image: truonghuy0108/ecommerce-backend:v3
+          imagePullPolicy: Always
+
+          args:
+            - --spring.config.location=file:/app/config/application.properties
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          envFrom:
+            - secretRef:
+                name: ecommerce-backend-database-connection
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
+          volumeMounts:
+            - name: application-config
+              mountPath: /app/config/application.properties
+              subPath: application.properties
+
+      volumes:
+        - name: application-config
+          configMap:
+            name: ecommerce-backend-application-properties-configmap
