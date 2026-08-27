@@ -27,7 +27,7 @@ jobs:
 
           sudo install /tmp/kubeconform /usr/local/bin/kubeconform
 
-          kubeconform -version
+          kubeconform -v
 
       - name: Validate Kubernetes manifests
         run: |
