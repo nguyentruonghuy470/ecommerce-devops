@@ -1,0 +1,50 @@
+name: Validate Kubernetes Manifests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate Kubernetes manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install kubeconform
+        run: |
+          curl -L \
+            -o /tmp/kubeconform.tar.gz \
+            https://github.com/yannh/kubeconform/releases/download/v0.7.0/kubeconform-linux-amd64.tar.gz
+
+          tar -xzf /tmp/kubeconform.tar.gz -C /tmp kubeconform
+
+          sudo install /tmp/kubeconform /usr/local/bin/kubeconform
+
+          kubeconform -version
+
+      - name: Validate Kubernetes manifests
+        run: |
+          kubeconform \
+            -strict \
+            -summary \
+            -ignore-missing-schemas \
+            k8s/namespace.yaml \
+            k8s/backend/deployment.yaml \
+            k8s/backend/service.yaml \
+            k8s/backend/configmap.yaml \
+            k8s/frontend/deployment.yaml \
+            k8s/frontend/service.yaml \
+            k8s/ingress/frontend-ingress.yaml \
+            k8s/ingress/backend-ingress.yaml \
+            k8s/autoscaling/backend-hpa.yaml \
+            k8s/storage/pvc.yaml \
+            k8s/redis/pvc.yaml \
+            k8s/redis/service.yaml \
+            k8s/redis/headless-service.yaml
