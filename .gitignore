@@ -36,3 +36,11 @@ backup-data/
 # OS
 .DS_Store
 Thumbs.db
+
+# Angular
+.angular/
+coverage/
+
+# Maven
+.mvn/timing.properties
+**/.mvn/wrapper/maven-wrapper.jar
